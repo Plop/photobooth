@@ -362,6 +362,7 @@
   "mail:sendPicture:subject": "Here is your picture",
   "mail:sendPicture:text": "Hey, your picture is attached.",
   "mailError": "Error sending e-mail",
+  "mailMultiRecipientHint": "Use a comma between each email address to send to multiple recipients",
   "mailSaved": "E-mail address saved successfully",
   "mailSent": "E-mail sent",
   "manual:authentication:login_enabled": "If enabled, a username and password will be needed to access the adminpage and/or start screen (depending on your setup).",

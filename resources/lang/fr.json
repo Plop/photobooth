@@ -256,6 +256,7 @@
   "image_width": "Largeur de l'image",
   "insertMail": "Entrez votre adresse e-mail pour recevoir la photo.",
   "insertMailToDB": "Entrez votre adresse e-mail pour l'ajouter dans une base de données. Un lien vers toutes les photos vous sera envoyé dans les prochains jours.",
+  "mailMultiRecipientHint": "Mettez une virgule entre chaque mail pour en envoyer plusieurs.",
   "installlog": "Log d'installation",
   "jpeg_quality": "JPEG qualité",
   "jpeg_quality:jpeg_quality_chroma": "JPEG qualité pour chroma-keying (10 ... 100)",

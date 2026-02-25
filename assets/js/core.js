@@ -1162,6 +1162,26 @@ const photoBooth = (function () {
         });
         form.appendChild(recipientInput);
 
+        // --- NOUVEAU BLOC CORRIGÉ ---
+        const multiRecipientText = document.createElement('div'); // Utilise div au lieu de p
+        multiRecipientText.style.display = 'block'; // Force l'affichage
+        multiRecipientText.style.color = '#333'; // Force une couleur sombre visible
+        multiRecipientText.style.fontSize = '12px';
+        multiRecipientText.style.marginTop = '10px';
+        multiRecipientText.style.textAlign = 'center';
+        const multiRecipientHint = photoboothTools.getTranslation('mailMultiRecipientHint');
+
+        // On vérifie si la traduction est vide, undefined, ou égale à la clé
+        if (!multiRecipientHint || multiRecipientHint === 'mailMultiRecipientHint') {
+            multiRecipientText.textContent = 'Mettez une virgule entre chaque mail pour en envoyer plusieurs';
+        } else {
+            multiRecipientText.textContent = multiRecipientHint;
+        }
+
+        // TRÈS IMPORTANT : On l'ajoute au "form" et non au "body" pour qu'il reste sous l'input
+        body.appendChild(multiRecipientText);
+        // -----------------------------
+
         if (config.mail.virtualKeyboard) {
             virtualKeyboard.initialize(config.mail.keyboardLayout, '#send-mail-recipient', '#send-mail-form');
         }
