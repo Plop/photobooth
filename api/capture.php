@@ -8,6 +8,7 @@ use Photobooth\Enum\FolderEnum;
 use Photobooth\Image;
 use Photobooth\PhotoboothCapture;
 use Photobooth\Service\LoggerService;
+use Photobooth\Service\PhotoConsentLogService;
 
 header('Content-Type: application/json');
 
@@ -101,8 +102,14 @@ try {
         }
         $captureHandler->captureWithCmd();
     }
+    $response = $captureHandler->returnData();
+
+    if (in_array($_POST['style'], ['photo', 'chroma', 'custom'], true)) {
+        PhotoConsentLogService::getInstance()->addPhotoEntry($response['file']);
+    }
+
     // send image to frontend
-    echo json_encode($captureHandler->returnData());
+    echo json_encode($response);
     exit();
 } catch (\Exception $e) {
     $data = ['error' => $e->getMessage()];

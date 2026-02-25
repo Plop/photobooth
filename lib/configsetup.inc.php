@@ -2355,6 +2355,13 @@ return [
             'name' => 'mail[text]',
             'value' => htmlentities($config['mail']['text'] ?? ''),
         ],
+        'mail_rgpd_text' => [
+            'view' => 'basic',
+            'type' => 'input',
+            'placeholder' => '',
+            'name' => 'mail[rgpd_text]',
+            'value' => htmlentities($config['mail']['rgpd_text'] ?? ''),
+        ],
         'mail_alt_text' => [
             'view' => 'advanced',
             'type' => 'input',
