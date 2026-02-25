@@ -46,13 +46,13 @@ class PhotoConsentLogService
     /**
      * @param string[] $recipients
      */
-    public function updateMailDetails(string $filename, array $recipients, string $consentStatus): void
+    public function addMailEntry(string $filename, array $recipients, string $consentStatus): void
     {
         $this->ensureLogFileExists();
 
-        $handle = fopen($this->logFile, 'c+');
+        $handle = fopen($this->logFile, 'a');
         if ($handle === false) {
-            throw new \RuntimeException('Unable to open consent log file for update.');
+            throw new \RuntimeException('Unable to open consent log file for appending.');
         }
 
         if (!flock($handle, LOCK_EX)) {
@@ -60,49 +60,22 @@ class PhotoConsentLogService
             throw new \RuntimeException('Unable to lock consent log file.');
         }
 
-        rewind($handle);
-        $rows = [];
-        while (($row = fgetcsv($handle, null, ',', '"', '\\')) !== false) {
-            $rows[] = $row;
-        }
-
         $mailAddress = implode('; ', $recipients);
-        $updated = false;
 
-        for ($index = count($rows) - 1; $index >= 1; --$index) {
-            if (($rows[$index][2] ?? '') !== $filename) {
-                continue;
-            }
-
-            $rows[$index][3] = $mailAddress;
-            $rows[$index][4] = $consentStatus;
-            $updated = true;
-            break;
-        }
-
-        if (!$updated) {
-            $rows[] = [
-                date('Y-m-d'),
-                date('H:i:s'),
-                $filename,
-                $mailAddress,
-                $consentStatus,
-            ];
-        }
-
-        ftruncate($handle, 0);
-        rewind($handle);
-
-        foreach ($rows as $row) {
-            if (fputcsv($handle, $row, ',', '"', '\\') === false) {
-                flock($handle, LOCK_UN);
-                fclose($handle);
-                throw new \RuntimeException('Unable to rewrite consent log file.');
-            }
-        }
+        $result = fputcsv($handle, [
+            date('Y-m-d'),
+            date('H:i:s'),
+            $filename,
+            $mailAddress,
+            $consentStatus,
+        ], ',', '"', '\\');
 
         flock($handle, LOCK_UN);
         fclose($handle);
+
+        if ($result === false) {
+            throw new \RuntimeException('Unable to write mail entry to consent log file.');
+        }
     }
 
     private function ensureLogFileExists(): void

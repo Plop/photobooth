@@ -84,7 +84,7 @@ if ($config['mail']['send_all_later']) {
     }
     if (!empty($_POST['image'])) {
         $postImage = basename($_POST['image']);
-        PhotoConsentLogService::getInstance()->updateMailDetails($postImage, $recipients, $consentMessage);
+        PhotoConsentLogService::getInstance()->addMailEntry($postImage, $recipients, $consentMessage);
     }
 
     echo json_encode(['success' => true, 'saved' => true]);
@@ -191,7 +191,7 @@ foreach ($recipients as $recipient) {
 }
 
 // If all emails are sent successfully
-PhotoConsentLogService::getInstance()->updateMailDetails($postImage, $recipients, $consentMessage);
+PhotoConsentLogService::getInstance()->addMailEntry($postImage, $recipients, $consentMessage);
 $_SESSION['sendpic']['count']++;
 echo json_encode(['success' => true]);
 exit();
