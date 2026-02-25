@@ -9,6 +9,7 @@ use Photobooth\Service\DatabaseManagerService;
 use Photobooth\Service\LanguageService;
 use Photobooth\Service\LoggerService;
 use Photobooth\Service\MailService;
+use Photobooth\Service\PhotoConsentLogService;
 use PHPMailer\PHPMailer\PHPMailer;
 
 header('Content-Type: application/json');
@@ -72,12 +73,20 @@ if (!empty($invalidEmails)) {
     exit();
 }
 
+$consentAccepted = isset($_POST['consent']) && $_POST['consent'] === '1';
+$consentMessage = $consentAccepted ? "J'accepte" : "J'accepte pas";
+
 if ($config['mail']['send_all_later']) {
     $mailService = MailService::getInstance();
     // Save each recipient to the database
     foreach ($recipients as $recipient) {
         $mailService->addRecipientToDatabase($recipient);
     }
+    if (!empty($_POST['image'])) {
+        $postImage = basename($_POST['image']);
+        PhotoConsentLogService::getInstance()->updateMailDetails($postImage, $recipients, $consentMessage);
+    }
+
     echo json_encode(['success' => true, 'saved' => true]);
     exit();
 }
@@ -121,6 +130,7 @@ $mailSubject = trim($config['mail']['subject']) !== ''
 $mailText = trim($config['mail']['text']) !== ''
     ? $config['mail']['text']
     : LanguageService::getInstance()->translate('mail:sendPicture:text');
+$mailText .= PHP_EOL . PHP_EOL . 'Consentement: ' . $consentMessage;
 
 $path = FolderEnum::IMAGES->absolute() . DIRECTORY_SEPARATOR;
 
@@ -181,6 +191,7 @@ foreach ($recipients as $recipient) {
 }
 
 // If all emails are sent successfully
+PhotoConsentLogService::getInstance()->updateMailDetails($postImage, $recipients, $consentMessage);
 $_SESSION['sendpic']['count']++;
 echo json_encode(['success' => true]);
 exit();

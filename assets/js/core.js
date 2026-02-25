@@ -1143,6 +1143,46 @@ const photoBooth = (function () {
         });
         body.appendChild(form);
 
+        // Consent
+        const consentWrapper = document.createElement('label');
+        consentWrapper.classList.add('form-label');
+        consentWrapper.setAttribute('for', 'send-mail-consent');
+
+        const consentInput = document.createElement('input');
+        consentInput.id = 'send-mail-consent';
+        consentInput.type = 'checkbox';
+        consentInput.name = 'consent';
+        consentInput.value = '1';
+        consentWrapper.appendChild(consentInput);
+
+        const consentText = document.createElement('span');
+        consentText.textContent = ' ' + photoboothTools.getTranslation('mailConsentLabel');
+        consentWrapper.appendChild(consentText);
+
+        form.appendChild(consentWrapper);
+
+        // RGPD button
+        const rgpdButton = photoboothTools.button.create('mailRgpdButton', 'fa fa-shield', 'default', '');
+        rgpdButton.type = 'button';
+        rgpdButton.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+
+            photoboothTools.modal.close();
+            photoboothTools.modal.open('rgpd');
+
+            const rgpdBody = photoboothTools.modal.element.querySelector('.modal-body');
+            const rgpdTitle = document.createElement('h2');
+            rgpdTitle.textContent = photoboothTools.getTranslation('mailRgpdTitle');
+            rgpdBody.appendChild(rgpdTitle);
+
+            const rgpdText = document.createElement('p');
+            const configuredText = config.mail.rgpd_text || '';
+            rgpdText.textContent = configuredText !== '' ? configuredText : photoboothTools.getTranslation('mailRgpdDefaultText');
+            rgpdBody.appendChild(rgpdText);
+        });
+        form.appendChild(rgpdButton);
+
         // Image
         const imageInput = document.createElement('input');
         imageInput.type = 'hidden';

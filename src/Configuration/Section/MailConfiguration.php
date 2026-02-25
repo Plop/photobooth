@@ -22,6 +22,7 @@ final class MailConfiguration
                     ->end()
                 ->scalarNode('subject')->defaultValue('')->end()
                 ->scalarNode('text')->defaultValue('')->end()
+                ->scalarNode('rgpd_text')->defaultValue('')->end()
                 ->scalarNode('alt_text')->defaultValue('')->end()
                 ->booleanNode('is_html')->defaultValue(false)->end()
                 ->scalarNode('host')->defaultValue('smtp.example.com')->end()
